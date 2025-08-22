@@ -260,7 +260,7 @@ export class CustomPageController {
               const [ghlUser, setGhlUser] = useState({ name: 'Loading...', email: 'Loading...', hasTokens: false }); 
               const [editingInstanceId, setEditingInstanceId] = useState(null); 
               const [editingCustomName, setEditingCustomName] = useState('');
-              const [appLogo, setAppLogo] = useState(null);
+              const [appLogo, setAppLogo] = useState('/public/LogoIcon.jpg');
               const [appName, setAppName] = useState('WLink');
               const [theme, setTheme] = useState('dark');
 
@@ -695,8 +695,16 @@ export class CustomPageController {
                             <p className={\`\${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}\`}>Manage your instances with ease</p>
                         </div>
                     </div>
-                    <button onClick={toggleTheme} className={\`p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 \${theme === 'dark' ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600 focus:ring-offset-gray-800 focus:ring-yellow-400' : 'bg-gray-200 text-indigo-600 hover:bg-gray-300 focus:ring-offset-gray-100 focus:ring-indigo-500'}\`}>
-                      {theme === 'dark' ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
+                    <button onClick={toggleTheme} className={\`p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 \${theme === 'dark' ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600 focus:ring-offset-gray-800 focus:ring-yellow-400' : 'bg-gray-200 text-indigo-600 hover:bg-gray-300 focus:ring-offset-gray-100 focus:ring-indigo-500'}\`}>
+                      {theme === 'dark' ? 
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.121-3.536a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM10 18a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1zM4.464 4.05a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM1.05 11.293a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0zM16.95 11.293a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        : 
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                        </svg>
+                      }
                     </button>
                   </header>
 
