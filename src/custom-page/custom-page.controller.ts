@@ -707,7 +707,7 @@ export class CustomPageController {
                                 </p>
                               )}
                               <p className="text-gray-400">Instance Name: <span className="font-mono text-gray-300 break-all">{inst.instanceName || 'N/A'}</span></p>
-                              {inst.instanceId && <p className="text-gray-400">Instance ID (GUID): <span className="font-mono text-gray-300 break-all">{inst.instanceId}</span></p>}
+                              {inst.instanceId && <p className="text-gray-400">Instance ID: <span className="font-mono text-gray-300 break-all">{inst.instanceId}</span></p>}
                               <div className="flex items-center gap-2 pt-1">
                                 <span className={\`status-badge relative overflow-hidden inline-block text-xs px-3 py-1 rounded-full font-medium \${inst.state === 'authorized' ? 'bg-green-500/20 text-green-300' : inst.state === 'notAuthorized' ? 'bg-red-500/20 text-red-300' : inst.state === 'blocked' || inst.state === 'yellowCard' ? 'bg-red-600/50 text-red-200' : 'bg-yellow-500/20 text-yellow-300'}\`}>
                                   {inst.state === 'authorized' ? 'Connected' : inst.state === 'notAuthorized' ? 'Disconnected' : inst.state === 'qr_code' ? 'Awaiting Scan' : inst.state === 'starting' ? 'Connecting...' : 'Needs Action'}
@@ -737,7 +737,7 @@ export class CustomPageController {
                       <form onSubmit={createInstance} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID (GUID)</label>
+                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID</label>
                             <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., abcd-1234-guid" required />
                           </div>
                           <div>
