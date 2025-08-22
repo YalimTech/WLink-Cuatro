@@ -630,7 +630,7 @@ export class CustomPageController {
                           </svg>
                       </div>
                       <div>
-                          <h1 className="text-3xl font-bold text-white">WhatsApp Integration</h1>
+                          <h1 className="text-3xl font-bold text-white">WLink</h1>
                           <p className="text-gray-400">Manage your instances with ease</p>
                       </div>
                   </header>
@@ -697,7 +697,7 @@ export class CustomPageController {
                               </div>
                             </div>
                             <div className="flex-shrink-0 flex flex-row md:flex-col gap-3 w-full md:w-auto">
-                              <button onClick={() => openConsole(inst.id)} className="w-full md:w-40 bg-gray-700/50 text-gray-300 font-semibold py-2 px-4 rounded-lg hover:bg-gray-600/80 transition-all duration-300 ease-in-out hover:scale-105">Open Console</button>
+                              <button onClick={() => openConsole(inst.id)} className="w-full md:w-40 bg-gray-700/50 text-gray-300 font-semibold py-2 px-4 rounded-lg hover:bg-gray-600/80 transition-all duration-300 ease-in-out hover:scale-105">Payments</button>
                               {inst.state === 'authorized' ? (
                                 <button onClick={() => logoutInstance(inst.id)} className="w-full md:w-40 bg-yellow-500/20 text-yellow-400 font-semibold py-2 px-4 rounded-lg hover:bg-yellow-500/40 transition-all duration-300 ease-in-out hover:scale-105">Logout</button>
                               ) : (
@@ -718,16 +718,16 @@ export class CustomPageController {
                       <form onSubmit={createInstance} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID (GUID)</label>
+                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID</label>
                             <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., abcd-1234-guid" required />
                           </div>
                           <div>
-                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Name</label>
+                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Email</label>
                             <input type="text" id="instanceName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., 1234567890" required />
                           </div>
                         </div>
                         <div>
-                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">API Token</label>
+                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">Token</label>
                           <input type="text" id="token" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="Your Evolution API token" required />
                         </div>
                         <div>
