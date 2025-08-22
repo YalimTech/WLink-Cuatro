@@ -138,41 +138,70 @@ export class CustomPageController {
           <style>
             body {
               font-family: 'Inter', sans-serif;
+              background-color: #0D1117;
+              background-image: radial-gradient(circle at top left, rgba(79, 70, 229, 0.15), transparent 40%),
+                                radial-gradient(circle at bottom right, rgba(138, 43, 226, 0.15), transparent 40%);
             }
-            /* Estilos para el modal personalizado */
-            .modal-overlay {
-              position: fixed;
+            .bg-gradient-custom {
+              background-image: linear-gradient(to right, #8A2BE2, #4F46E5, #2272FF, #4F46E5, #8A2BE2);
+              background-size: 250% auto;
+              transition: background-position 0.5s ease-in-out;
+            }
+            .bg-gradient-custom:hover {
+              background-position: right center;
+            }
+            .bg-glass {
+              background: rgba(23, 27, 42, 0.7);
+              backdrop-filter: blur(12px);
+              -webkit-backdrop-filter: blur(12px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .bg-glass:hover {
+              transform: translateY(-6px);
+              box-shadow: 0 0 25px rgba(138, 43, 226, 0.3), 0 0 40px rgba(34, 114, 255, 0.2);
+            }
+            .status-badge {
+                position: relative;
+                overflow: hidden;
+            }
+            .status-badge::before {
+              content: '';
+              position: absolute;
               top: 0;
-              left: 0;
-              width: 100%;
+              left: -150%;
+              width: 75%;
               height: 100%;
-              background-color: rgba(0, 0, 0, 0.6); /* Fondo más oscuro */
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              z-index: 1000;
+              background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+              animation: shine 4s infinite linear;
+            }
+            @keyframes shine {
+              0% { left: -150%; }
+              50% { left: 150%; }
+              100% { left: 150%; }
+            }
+            .modal-overlay {
+              position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+              background-color: rgba(0, 0, 0, 0.7);
+              display: flex; justify-content: center; align-items: center; z-index: 1000;
+              backdrop-filter: blur(5px);
             }
             .modal-content {
-              background-color: white;
-              padding: 2rem;
-              border-radius: 0.75rem; /* rounded-xl */
-              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* shadow-lg más pronunciado */
-              max-width: 90%;
-              width: 400px;
-              text-align: center;
-              animation: fadeIn 0.3s ease-out; /* Animación de entrada */
+              background-color: #161b22; color: #e6edf3;
+              padding: 2rem; border-radius: 0.75rem;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+              max-width: 90%; width: 450px; text-align: center;
+              animation: fadeIn 0.3s ease-out;
             }
             @keyframes fadeIn {
               from { opacity: 0; transform: translateY(-20px); }
               to { opacity: 1; transform: translateY(0); }
             }
-            /* Estilos para el spinner de carga */
             .spinner {
-              border: 4px solid rgba(0, 0, 0, 0.1);
-              border-left-color: #6366f1; /* Color índigo de Tailwind */
-              border-radius: 50%;
-              width: 40px;
-              height: 40px;
+              border: 4px solid rgba(255, 255, 255, 0.2);
+              border-left-color: #8A2BE2;
+              border-radius: 50%; width: 40px; height: 40px;
               animation: spin 1s linear infinite;
             }
             @keyframes spin {
@@ -181,8 +210,8 @@ export class CustomPageController {
             }
           </style>
         </head>
-        <body class="bg-gray-100 p-4 sm:p-6 min-h-screen flex items-center justify-center">
-          <div id="root" class="w-full max-w-3xl mx-auto"></div>
+        <body class="text-gray-200 p-4 sm:p-6 min-h-screen flex items-center justify-center">
+          <div id="root" class="w-full max-w-4xl mx-auto"></div>
           <script type="text/babel">
             const { useState, useEffect, useRef } = React;
 
@@ -190,7 +219,6 @@ export class CustomPageController {
               const [locationId, setLocationId] = useState(null);
               const [encrypted, setEncrypted] = useState(null);
               const [instances, setInstances] = useState([]);
-              // CAMBIO: Actualizado form state para usar instanceName y token
               const [form, setForm] = useState({ instanceId: '', instanceName: '', token: '', customName: '' }); 
               const [qr, setQr] = useState('');
               const [showQr, setShowQr] = useState(false);
@@ -250,7 +278,7 @@ export class CustomPageController {
                   if (qr.startsWith('data:image')) {
                     const img = document.createElement('img');
                     img.src = qr;
-                    img.className = "mx-auto max-w-full h-auto"; // Estilos para la imagen QR
+                    img.className = "mx-auto max-w-full h-auto rounded-lg"; // Estilos para la imagen QR
                     qrCodeDivRef.current.appendChild(img);
                     console.log('QR rendered as image.');
                   } else {
@@ -593,279 +621,151 @@ export class CustomPageController {
 
 
               return (
-                <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-6 border border-gray-200 w-full">
-                  {/* Encabezado con logo y título */}
-                  <div className="flex flex-col items-center justify-center mb-6">
-                    <img src="https://googleusercontent.com/file_content/0" alt="WLink Icono" className="h-16 w-16 mb-2" />
-                    <h1 className="text-3xl font-bold text-center text-gray-800">WhatsApp Integration</h1>
-                    <p className="text-gray-500 text-center">Manage your instances with ease</p>
-                  </div>
-
-                  {/* Sección de Connection Status */}
-                  <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 shadow-sm">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-                      <i className="fas fa-signal text-blue-500 mr-2"></i> Connection Status
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
-                      <div>
-                        <p><i className="fas fa-user text-gray-400 mr-2"></i> <strong>User:</strong> {ghlUser.name}</p>
-                        <p><i className="fas fa-envelope text-gray-400 mr-2"></i> <strong>Email:</strong> {ghlUser.email}</p>
-                        <p><i className="fas fa-map-marker-alt text-gray-400 mr-2"></i> <strong>Location ID:</strong> {locationId || 'Loading...'}</p>
+                <div className="space-y-8 w-full">
+                  {/* Header */}
+                  <header className="flex items-center space-x-4">
+                      <div className="bg-green-500 p-3 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)]">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.267.655 4.398 1.908 6.161l.216.324-1.256 4.587 4.71-1.241.33.208z"/>
+                          </svg>
                       </div>
                       <div>
-                        <p><i className="fas fa-shield-alt text-green-500 mr-2"></i> <strong>OAuth Status:</strong></p>
-                        <p className="ml-6">
-                          {ghlUser.hasTokens ? (
-                            <><i className="fas fa-check-circle text-green-500 mr-2"></i> Authenticated and ready</>
-                          ) : (
-                            <><i className="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Not Authenticated</>
-                          )}
-                        </p>
+                          <h1 className="text-3xl font-bold text-white">WhatsApp Integration</h1>
+                          <p className="text-gray-400">Manage your instances with ease</p>
+                      </div>
+                  </header>
+
+                  <main className="space-y-6">
+                    {/* Connection Status Card */}
+                    <div className="bg-glass rounded-2xl p-6">
+                      <h2 className="text-lg font-semibold text-white mb-6 flex items-center">
+                        <i className="fas fa-signal text-indigo-400 mr-3"></i> Connection Status
+                      </h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+                        <div className="space-y-3">
+                            <p className="flex items-center"><i className="fas fa-user text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">User:</strong> <span className="text-gray-200">{ghlUser.name}</span></p>
+                            <p className="flex items-center"><i className="fas fa-envelope text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Email:</strong> <span className="text-gray-200">{ghlUser.email}</span></p>
+                            <p className="flex items-center"><i className="fas fa-map-marker-alt text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Location ID:</strong> <span className="text-gray-200 break-all">{locationId || 'Loading...'}</span></p>
+                        </div>
+                        <div className="flex items-center">
+                            <div className="w-full">
+                                <h3 className="font-semibold text-white mb-3 flex items-center text-sm">
+                                    <i className="fas fa-shield-alt text-indigo-400 mr-2"></i> OAuth Status
+                                </h3>
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-full bg-gray-700 rounded-full h-2.5">
+                                        <div className="bg-gradient-custom h-2.5 rounded-full" style={{ width: ghlUser.hasTokens ? '100%' : '0%' }}></div>
+                                    </div>
+                                </div>
+                                <span className={\`font-medium whitespace-nowrap mt-2 block \${ghlUser.hasTokens ? 'text-green-400' : 'text-yellow-400'}\`}>
+                                  {ghlUser.hasTokens ? 'Authenticated & Ready' : 'Not Authenticated'}
+                                </span>
+                            </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Sección de Your WhatsApp Instances */}
-                  <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 shadow-sm">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-                      <i className="fab fa-whatsapp text-green-500 mr-2"></i> Your WhatsApp Instances
-                    </h2>
-                    <div className="space-y-4">
-                      {instances.length === 0 && <p className="text-gray-500 text-center py-4">No instances added yet. Add one above!</p>}
-                      
-                      {instances.map((inst) => (
-                        <div key={inst.id} className="flex flex-col sm:flex-row justify-between items-center p-4 border border-gray-200 rounded-xl bg-white shadow-sm">
-                          <div className="text-center sm:text-left mb-3 sm:mb-0">
-                            {/* CAMBIO: Mostrar instanceName como el ID único; instanceId como el GUID */}
-                            <p className="text-sm text-gray-500">Instance Name: {inst.instanceName || 'N/A'}</p>
-                            {inst.instanceId && <p className="text-sm text-gray-500">Instance ID (GUID): {inst.instanceId}</p>}
-                            {/* Campo de nombre personalizado editable */}
-                            {editingInstanceId === inst.id ? (
-                              <div className="flex flex-col items-center sm:items-start">
-                                <input
-                                  type="text"
-                                  value={editingCustomName} 
-                                  onChange={(e) => setEditingCustomName(e.target.value)} 
-                                  className="font-semibold text-lg text-gray-800 border-b border-gray-300 focus:outline-none focus:border-indigo-500 mb-1"
-                                />
-                                <div className="flex gap-2 mt-2">
-                                  <button
-                                    onClick={() => saveEditedName(inst.id)}
-                                    className="px-2 py-1 rounded-md bg-indigo-500 text-white text-sm"
-                                  >
-                                    Save
-                                  </button>
-                                  <button
-                                    onClick={cancelEditingName}
-                                    className="px-2 py-1 rounded-md bg-gray-300 text-gray-800 text-sm"
-                                  >
-                                    Cancel
-                                  </button>
+                    {/* Your WhatsApp Instances Card */}
+                    <div className="bg-glass rounded-2xl p-6">
+                      <h2 className="text-lg font-semibold text-white mb-6 flex items-center">
+                        <i className="fab fa-whatsapp text-green-400 mr-3"></i> Your WhatsApp Instances
+                      </h2>
+                      <div className="space-y-4">
+                        {instances.length === 0 && <p className="text-gray-400 text-center py-4">No instances added yet. Add one below!</p>}
+                        {instances.map((inst) => (
+                          <div key={inst.id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-4 rounded-xl bg-black/20 border border-white/10">
+                            <div className="flex-grow space-y-2 text-sm w-full md:w-auto">
+                              {editingInstanceId === inst.id ? (
+                                <div className="flex items-center gap-2">
+                                  <input type="text" value={editingCustomName} onChange={(e) => setEditingCustomName(e.target.value)} className="bg-transparent border-b border-indigo-500 text-white text-lg font-semibold focus:outline-none w-full" />
+                                  <button onClick={() => saveEditedName(inst.id)} className="text-green-400 hover:text-green-300"><i className="fas fa-check"></i></button>
+                                  <button onClick={cancelEditingName} className="text-red-400 hover:text-red-300"><i className="fas fa-times"></i></button>
                                 </div>
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center sm:items-start">
-                                <p className="font-semibold text-lg text-gray-800">
-                                  {inst.customName || 'Unnamed Instance'} 
-                                  <button
-                                    onClick={() => startEditingName(inst.id, inst.customName || '')} 
-                                    className="ml-2 text-blue-500 hover:text-blue-700 text-sm"
-                                    title="Edit Instance Name"
-                                  >
-                                    <i className="fas fa-pencil-alt"></i>
-                                  </button>
+                              ) : (
+                                <p className="font-semibold text-lg text-white flex items-center">
+                                  {inst.customName || 'Unnamed Instance'}
+                                  <button onClick={() => startEditingName(inst.id, inst.customName || '')} className="ml-2 text-indigo-400 hover:text-indigo-300 text-sm" title="Edit Name"><i className="fas fa-pencil-alt"></i></button>
                                 </p>
-                                <p className="text-sm text-gray-500">Created: {new Date(inst.createdAt).toLocaleDateString()}</p> 
-                                <span
-                                  className={
-                                    "mt-2 inline-block text-xs px-3 py-1 rounded-full font-medium " +
-                                    (inst.state === 'authorized'
-                                      ? 'bg-green-100 text-green-800' 
-                                      : inst.state === 'qr_code' || inst.state === 'starting'
-                                      ? 'bg-yellow-100 text-yellow-800' 
-                                      : inst.state === 'notAuthorized'
-                                      ? 'bg-red-100 text-red-800' 
-                                      : inst.state === 'yellowCard' || inst.state === 'blocked'
-                                      ? 'bg-red-500 text-white' 
-                                      : 'bg-gray-200 text-gray-800') 
-                                  }
-                                >
-                                  {
-                                    showQr && String(qrInstanceIdRef.current) === String(inst.id)
-                                      ? 'Awaiting Scan'
-                                      : inst.state === 'authorized'
-                                      ? 'Connected'
-                                      : inst.state === 'notAuthorized'
-                                      ? 'Disconnected'
-                                      : inst.state === 'qr_code'
-                                      ? 'Awaiting Scan (Background)' 
-                                      : inst.state === 'starting'
-                                      ? 'Connecting...'
-                                      : inst.state === 'yellowCard' || inst.state === 'blocked'
-                                      ? 'Error / Blocked'
-                                      : inst.state || 'Unknown' 
-                                  }
+                              )}
+                              <p className="text-gray-400">Instance Name: <span className="font-mono text-gray-300 break-all">{inst.instanceName || 'N/A'}</span></p>
+                              {inst.instanceId && <p className="text-gray-400">Instance ID (GUID): <span className="font-mono text-gray-300 break-all">{inst.instanceId}</span></p>}
+                              <div className="flex items-center gap-2 pt-1">
+                                <span className={\`status-badge relative overflow-hidden inline-block text-xs px-3 py-1 rounded-full font-medium \${inst.state === 'authorized' ? 'bg-green-500/20 text-green-300' : inst.state === 'notAuthorized' ? 'bg-red-500/20 text-red-300' : inst.state === 'blocked' || inst.state === 'yellowCard' ? 'bg-red-600/50 text-red-200' : 'bg-yellow-500/20 text-yellow-300'}\`}>
+                                  {inst.state === 'authorized' ? 'Connected' : inst.state === 'notAuthorized' ? 'Disconnected' : inst.state === 'qr_code' ? 'Awaiting Scan' : inst.state === 'starting' ? 'Connecting...' : 'Needs Action'}
                                 </span>
+                                <p className="text-gray-500 text-xs">Created: {new Date(inst.createdAt).toLocaleDateString()}</p>
                               </div>
-                            )}
+                            </div>
+                            <div className="flex-shrink-0 flex flex-row md:flex-col gap-3 w-full md:w-auto">
+                              <button onClick={() => openConsole(inst.id)} className="w-full md:w-40 bg-gray-700/50 text-gray-300 font-semibold py-2 px-4 rounded-lg hover:bg-gray-600/80 transition-all duration-300 ease-in-out hover:scale-105">Open Console</button>
+                              {inst.state === 'authorized' ? (
+                                <button onClick={() => logoutInstance(inst.id)} className="w-full md:w-40 bg-yellow-500/20 text-yellow-400 font-semibold py-2 px-4 rounded-lg hover:bg-yellow-500/40 transition-all duration-300 ease-in-out hover:scale-105">Logout</button>
+                              ) : (
+                                <button onClick={() => connectInstance(inst.id)} className="w-full md:w-40 bg-gradient-custom text-white font-bold py-2 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">Connect</button>
+                              )}
+                              <button onClick={() => deleteInstance(inst.id)} className="w-full md:w-40 bg-red-500/20 text-red-400 font-semibold py-2 px-4 rounded-lg hover:bg-red-500/40 transition-all duration-300 ease-in-out hover:scale-105">Delete</button>
+                            </div>
                           </div>
-                          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto mt-4 sm:mt-0">
-                            <button
-                              onClick={() => openConsole(inst.id)}
-                              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                            >
-                              Open Console
-                            </button>
-                            {inst.state === 'authorized' ? ( 
-                              <button
-                                onClick={() => logoutInstance(inst.id)}
-                                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-yellow-500 text-white font-semibold shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition duration-150 ease-in-out"
-                              >
-                                Logout
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => connectInstance(inst.id)}
-                                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-green-600 text-white font-semibold shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
-                              >
-                                Connect
-                              </button>
-                            )}
-                            <button
-                              onClick={() => deleteInstance(inst.id)}
-                              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-red-600 text-white font-semibold shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
-                            >
-                              Delete
-                            </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Add New Instance Card */}
+                    <div className="bg-glass rounded-2xl p-6">
+                      <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i className="fas fa-plus-circle text-green-400 mr-3"></i> Add New Instance
+                      </h2>
+                      <form onSubmit={createInstance} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID (GUID)</label>
+                            <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., abcd-1234-guid" required />
+                          </div>
+                          <div>
+                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Name</label>
+                            <input type="text" id="instanceName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., 1234567890" required />
                           </div>
                         </div>
-                      ))}
+                        <div>
+                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">API Token</label>
+                          <input type="text" id="token" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="Your Evolution API token" required />
+                        </div>
+                        <div>
+                          <label htmlFor="customName" className="block text-sm font-medium text-gray-400 mb-1">Instance Custom Name (Optional)</label>
+                          <input type="text" id="customName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.customName} onChange={(e) => setForm({ ...form, customName: e.target.value })} placeholder="e.g., Sales Team WhatsApp" />
+                        </div>
+                        <button type="submit" className="w-full bg-gradient-custom text-white font-bold py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">Add Instance</button>
+                      </form>
                     </div>
-                  </div>
+                  </main>
 
-                  {/* Sección de Add New Instance */}
-                  <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 shadow-sm">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-                      <i className="fas fa-plus-circle text-green-500 mr-2"></i> Add New Instance
-                    </h2>
-                    <form onSubmit={createInstance} className="space-y-4">
-                      <div>
-                        <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-700">Instance ID (GUID)</label>
-                        <input
-                          type="text"
-                          id="instanceGuid"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          value={form.instanceId || ''}
-                          onChange={(e) => setForm({ ...form, instanceId: e.target.value })}
-                          placeholder="e.g., abcd-1234-guid"
-                          required
-                        />
-                      </div>
-                      <div>
-                        {/* CAMBIO: Renombrado a 'Instance Name' para el ID único de Evolution API */}
-                        <label htmlFor="instanceName" className="block text-sm font-medium text-gray-700">Instance Name</label>
-                        <input
-                          type="text"
-                          id="instanceName" 
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          value={form.instanceName} 
-                          onChange={(e) => setForm({ ...form, instanceName: e.target.value })} 
-                          placeholder="e.g., 1234567890"
-                          required
-                        />
-                      </div>
-                      <div>
-                        {/* CAMBIO: Etiqueta a 'API Token' */}
-                        <label htmlFor="token" className="block text-sm font-medium text-gray-700">API Token</label>
-                        <input
-                          type="text"
-                          id="token" 
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          value={form.token} 
-                          onChange={(e) => setForm({ ...form, token: e.target.value })} 
-                          placeholder="Your token"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="customName" className="block text-sm font-medium text-gray-700">Instance Custom Name (Optional)</label> 
-                        <input
-                          type="text"
-                          id="customName" 
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          value={form.customName} 
-                          onChange={(e) => setForm({ ...form, customName: e.target.value })} 
-                          placeholder="e.g., Sales Team WhatsApp"
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
-                      >
-                        Add Instance
-                      </button>
-                    </form>
-                  </div>
-
-                  {/* Modal de QR Code */}
+                  {/* QR Modal */}
                   {showQr && (
-                    <div className="modal-overlay" onClick={() => {
-                      console.log('QR Overlay clicked: Closing QR modal.');
-                      setShowQr(false);
-                      if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
-                      setQr('');
-                      qrInstanceIdRef.current = null;
-                    }}>
+                    <div className="modal-overlay" onClick={() => setShowQr(false)}>
                       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Scan QR Code</h2>
+                        <h2 className="text-2xl font-bold text-white mb-4">Scan QR Code</h2>
                         {qrLoading ? (
-                          <div className="flex flex-col items-center justify-center h-48">
-                            <div className="spinner"></div>
-                            <p className="mt-4 text-gray-600 text-lg">Loading QR...</p>
-                          </div>
+                          <div className="flex flex-col items-center justify-center h-64"><div className="spinner"></div><p className="mt-4 text-gray-400">Loading QR...</p></div>
                         ) : qr ? (
-                          <div className="flex justify-center items-center h-64 w-64 mx-auto p-2 border border-gray-300 rounded-md bg-white">
-                            <div ref={qrCodeDivRef} className="w-full h-full flex items-center justify-center"></div>
-                          </div>
+                          <div ref={qrCodeDivRef} className="flex items-center justify-center p-2 bg-white rounded-lg"></div>
                         ) : (
-                          <p className="text-red-500 text-lg">No se pudo cargar el código QR. Intente de nuevo.</p>
+                          <p className="text-red-400">Could not load QR code. Please try again.</p>
                         )}
-                        <button
-                          onClick={() => {
-                            console.log('QR Close button clicked: Closing QR modal.');
-                            setShowQr(false);
-                            if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
-                            setQr('');
-                            qrInstanceIdRef.current = null;
-                          }}
-                          className="mt-6 px-6 py-2 rounded-lg bg-gray-700 text-white font-semibold shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out"
-                        >
-                          Close
-                        </button>
+                        <button onClick={() => setShowQr(false)} className="mt-6 px-6 py-2 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition">Close</button>
                       </div>
                     </div>
                   )}
 
-                  {/* Modal de Alerta/Confirmación General */}
+                  {/* General Modal */}
                   {modal.show && (
                     <div className="modal-overlay">
                       <div className="modal-content">
-                        <p className="text-lg font-medium mb-6 text-gray-700">{modal.message}</p>
+                        <p className="text-lg font-medium mb-6 text-gray-300">{modal.message}</p>
                         <div className="flex justify-center gap-4">
                           {modal.type === 'confirm' && (
-                            <button
-                              onClick={modal.onCancel}
-                              className="px-6 py-2 rounded-lg bg-gray-300 text-gray-800 font-semibold hover:bg-gray-400 transition duration-150 ease-in-out"
-                            >
-                              Cancel
-                            </button>
+                            <button onClick={modal.onCancel} className="px-6 py-2 rounded-lg bg-gray-600 text-gray-200 font-semibold hover:bg-gray-500 transition">Cancel</button>
                           )}
-                          <button
-                            onClick={modal.onConfirm || closeModal} 
-                            className={"px-6 py-2 rounded-lg text-white font-semibold shadow-md transition duration-150 ease-in-out " + (
-                              modal.type === 'error' ? 'bg-red-600 hover:bg-red-700' : 'bg-indigo-600 hover:bg-indigo-700'
-                            )}
-                          >
+                          <button onClick={modal.onConfirm || closeModal} className={\`px-6 py-2 rounded-lg text-white font-semibold shadow-md transition \${modal.type === 'error' ? 'bg-red-600 hover:bg-red-700' : 'bg-indigo-600 hover:bg-indigo-700'}\`}>
                             {modal.type === 'confirm' ? 'Confirm' : 'OK'}
                           </button>
                         </div>
