@@ -17,7 +17,7 @@ async function bootstrap() {
   // === Servir archivos estáticos ===
   // Sirve {projectRoot}/public en la RAÍZ del dominio.
   // Ej.: public/LogoIcon.png -> https://tu-dominio/LogoIcon.png
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(process.cwd(), 'public'));
 
   // === Configuración existente ===
   app.use(json({ limit: '1mb' }));
