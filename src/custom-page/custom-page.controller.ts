@@ -738,7 +738,7 @@ export class CustomPageController {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID</label>
-                            <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., abcd-1234-guid" required />
+                            <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., a1b2c3d3-e5f6h7-etc" required />
                           </div>
                           <div>
                             <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Email</label>
@@ -747,7 +747,7 @@ export class CustomPageController {
                         </div>
                         <div>
                           <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">Token</label>
-                          <input type="text" id="token" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="Your Evolution API token" required />
+                          <input type="text" id="token" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="A1B2-C3D4-F5G6H7-ETC" required />
                         </div>
                         <div>
                           <label htmlFor="customName" className="block text-sm font-medium text-gray-400 mb-1">Instance Custom Name (Optional)</label>
