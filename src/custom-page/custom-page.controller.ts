@@ -229,7 +229,8 @@ export class CustomPageController {
               const [ghlUser, setGhlUser] = useState({ name: 'Loading...', email: 'Loading...', hasTokens: false }); 
               const [editingInstanceId, setEditingInstanceId] = useState(null); 
               const [editingCustomName, setEditingCustomName] = useState('');
-              const [appLogo, setAppLogo] = useState('https://storage.googleapis.com/highlevel-apps-marketplace-storage-v2/685063e4a00e933bbc8184a5/profile/basicInfo/appLogo-1724341588220-WLink%20(1).png');
+              const [appLogo, setAppLogo] = useState(null);
+              const [appName, setAppName] = useState('WLink');
 
               // Función para mostrar el modal personalizado
               const showModal = (message, type = 'info', onConfirm = null, onCancel = null) => {
@@ -341,9 +342,10 @@ export class CustomPageController {
                     email: res.userData.email || 'N/A',
                     hasTokens: res.user ? res.user.hasTokens : false 
                   });
-                  // Actualizar el logo de la app
-                  if(res.userData && res.userData.app && res.userData.app.logoUrl) {
-                    setAppLogo(res.userData.app.logoUrl);
+                  // Actualizar el logo y nombre de la app
+                  if(res.userData && res.userData.app) {
+                    if(res.userData.app.logoUrl) setAppLogo(res.userData.app.logoUrl);
+                    if(res.userData.app.name) setAppName(res.userData.app.name);
                   }
                   console.log('User data decrypted and locationId set:', res.locationId);
                 } catch (err) {
@@ -632,11 +634,11 @@ export class CustomPageController {
                 <div className="space-y-8 w-full">
                   {/* Header */}
                   <header className="flex items-center space-x-4">
-                      <div className="bg-gray-800 p-2 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)]">
-                          <img src={appLogo} alt="App Logo" className="h-10 w-10 rounded-full" />
+                      <div className="bg-gray-800 p-2 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)] h-14 w-14 flex items-center justify-center">
+                          {appLogo ? <img src={appLogo} alt="App Logo" className="h-10 w-10 rounded-full" /> : <div className="h-10 w-10 rounded-full bg-gray-700"></div>}
                       </div>
                       <div>
-                          <h1 className="text-3xl font-bold text-white">WLink</h1>
+                          <h1 className="text-3xl font-bold text-white">{appName}</h1>
                           <p className="text-gray-400">Manage your instances with ease</p>
                       </div>
                   </header>
