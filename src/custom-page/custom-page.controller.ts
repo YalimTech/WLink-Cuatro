@@ -136,9 +136,15 @@ export class CustomPageController {
           <style>
             body {
               font-family: 'Inter', sans-serif;
+              transition: background-color 0.3s ease;
+            }
+            .dark-mode {
               background-color: #0D1117;
               background-image: radial-gradient(circle at top left, rgba(79, 70, 229, 0.15), transparent 40%),
                                 radial-gradient(circle at bottom right, rgba(138, 43, 226, 0.15), transparent 40%);
+            }
+            .light-mode {
+              background-color: #f3f4f6;
             }
             .bg-gradient-custom {
               background-image: linear-gradient(to right, #8A2BE2, #4F46E5, #2272FF, #4F46E5, #8A2BE2);
@@ -149,15 +155,27 @@ export class CustomPageController {
               background-position: right center;
             }
             .bg-glass {
+              transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            }
+            .dark-mode .bg-glass {
               background: rgba(23, 27, 42, 0.7);
               backdrop-filter: blur(12px);
               -webkit-backdrop-filter: blur(12px);
               border: 1px solid rgba(255, 255, 255, 0.1);
-              transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .light-mode .bg-glass {
+              background-color: #ffffff;
+              border: 1px solid #e5e7eb;
+              box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             }
             .bg-glass:hover {
               transform: translateY(-6px);
+            }
+            .dark-mode .bg-glass:hover {
               box-shadow: 0 0 25px rgba(138, 43, 226, 0.3), 0 0 40px rgba(34, 114, 255, 0.2);
+            }
+            .light-mode .bg-glass:hover {
+               box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
             }
             .status-badge {
                 position: relative;
@@ -185,22 +203,35 @@ export class CustomPageController {
               backdrop-filter: blur(5px);
             }
             .modal-content {
-              background-color: #161b22; color: #e6edf3;
-              padding: 2rem; border-radius: 0.75rem;
-              border: 1px solid rgba(255, 255, 255, 0.1);
-              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-              max-width: 90%; width: 450px; text-align: center;
               animation: fadeIn 0.3s ease-out;
+              max-width: 90%; width: 450px; text-align: center;
+              padding: 2rem; border-radius: 0.75rem;
+            }
+            .dark-mode .modal-content {
+               background-color: #161b22; color: #e6edf3;
+               border: 1px solid rgba(255, 255, 255, 0.1);
+               box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            }
+            .light-mode .modal-content {
+              background-color: #ffffff; color: #1f2937;
+              border: 1px solid #e5e7eb;
+              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             }
             @keyframes fadeIn {
               from { opacity: 0; transform: translateY(-20px); }
               to { opacity: 1; transform: translateY(0); }
             }
             .spinner {
-              border: 4px solid rgba(255, 255, 255, 0.2);
-              border-left-color: #8A2BE2;
               border-radius: 50%; width: 40px; height: 40px;
               animation: spin 1s linear infinite;
+            }
+            .dark-mode .spinner {
+              border: 4px solid rgba(255, 255, 255, 0.2);
+              border-left-color: #8A2BE2;
+            }
+            .light-mode .spinner {
+              border: 4px solid rgba(0, 0, 0, 0.1);
+              border-left-color: #4f46e5;
             }
             @keyframes spin {
               0% { transform: rotate(0deg); }
@@ -208,7 +239,7 @@ export class CustomPageController {
             }
           </style>
         </head>
-        <body class="text-gray-200 p-4 sm:p-6 min-h-screen flex items-center justify-center">
+        <body class="p-4 sm:p-6 min-h-screen flex items-center justify-center">
           <div id="root" class="w-full max-w-4xl mx-auto"></div>
           <script type="text/babel">
             const { useState, useEffect, useRef } = React;
@@ -231,6 +262,15 @@ export class CustomPageController {
               const [editingCustomName, setEditingCustomName] = useState('');
               const [appLogo, setAppLogo] = useState(null);
               const [appName, setAppName] = useState('WLink');
+              const [theme, setTheme] = useState('dark');
+
+              useEffect(() => {
+                document.body.className = \`p-4 sm:p-6 min-h-screen flex items-center justify-center \${theme === 'dark' ? 'dark-mode text-gray-200' : 'light-mode text-gray-800'}\`;
+              }, [theme]);
+
+              const toggleTheme = () => {
+                setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+              };
 
               // Función para mostrar el modal personalizado
               const showModal = (message, type = 'info', onConfirm = null, onCancel = null) => {
@@ -645,14 +685,19 @@ export class CustomPageController {
               return (
                 <div className="space-y-8 w-full">
                   {/* Header */}
-                  <header className="flex items-center space-x-4">
-                      <div className="bg-gray-800 p-2 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)] h-14 w-14 flex items-center justify-center">
-                          {appLogo ? <img src={appLogo} alt="App Logo" className="h-10 w-10 rounded-full" /> : <div className="h-10 w-10 rounded-full bg-gray-700"></div>}
-                      </div>
-                      <div>
-                          <h1 className="text-3xl font-bold text-white">{appName}</h1>
-                          <p className="text-gray-400">Manage your instances with ease</p>
-                      </div>
+                  <header className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                        <div className="bg-gray-800 p-2 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)] h-14 w-14 flex items-center justify-center">
+                            {appLogo ? <img src={appLogo} alt="App Logo" className="h-10 w-10 rounded-full" /> : <div className="h-10 w-10 rounded-full bg-gray-700 animate-pulse"></div>}
+                        </div>
+                        <div>
+                            <h1 className={\`text-3xl font-bold \${theme === 'dark' ? 'text-white' : 'text-gray-900'}\`}>{appName}</h1>
+                            <p className={\`\${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}\`}>Manage your instances with ease</p>
+                        </div>
+                    </div>
+                    <button onClick={toggleTheme} className={\`p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 \${theme === 'dark' ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600 focus:ring-offset-gray-800 focus:ring-yellow-400' : 'bg-gray-200 text-indigo-600 hover:bg-gray-300 focus:ring-offset-gray-100 focus:ring-indigo-500'}\`}>
+                      {theme === 'dark' ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
+                    </button>
                   </header>
 
                   <main className="space-y-6">
@@ -661,19 +706,19 @@ export class CustomPageController {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                         {/* Left Side: Connection Status */}
                         <div>
-                          <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+                          <h2 className={\`text-lg font-semibold mb-4 flex items-center \${theme === 'dark' ? 'text-white' : 'text-gray-800'}\`}>
                             <i className="fas fa-signal text-indigo-400 mr-3"></i> Connection Status
                           </h2>
                           <div className="space-y-3 text-sm">
-                              <p className="flex items-center"><i className="fas fa-user text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">User:</strong> <span className="text-gray-200">{ghlUser.name}</span></p>
-                              <p className="flex items-center"><i className="fas fa-envelope text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Email:</strong> <span className="text-gray-200">{ghlUser.email}</span></p>
-                              <p className="flex items-center"><i className="fas fa-map-marker-alt text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Location ID:</strong> <span className="text-gray-200 break-all">{locationId || 'Loading...'}</span></p>
+                              <p className="flex items-center"><i className={\`fas fa-user mr-3 w-4 text-center \${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}\`}></i> <strong className={\`mr-2 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>User:</strong> <span className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>{ghlUser.name}</span></p>
+                              <p className="flex items-center"><i className={\`fas fa-envelope mr-3 w-4 text-center \${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}\`}></i> <strong className={\`mr-2 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Email:</strong> <span className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>{ghlUser.email}</span></p>
+                              <p className="flex items-center"><i className={\`fas fa-map-marker-alt mr-3 w-4 text-center \${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}\`}></i> <strong className={\`mr-2 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Location ID:</strong> <span className={\`break-all \${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}\`}>{locationId || 'Loading...'}</span></p>
                               <div className="pt-2">
-                                  <h3 className="font-semibold text-white mb-2 flex items-center text-sm">
+                                  <h3 className={\`font-semibold mb-2 flex items-center text-sm \${theme === 'dark' ? 'text-white' : 'text-gray-800'}\`}>
                                       <i className="fas fa-shield-alt text-indigo-400 mr-2"></i> OAuth Status
                                   </h3>
                                   <div className="flex items-center space-x-3">
-                                      <div className="w-full bg-gray-700 rounded-full h-2.5">
+                                      <div className={\`w-full rounded-full h-2.5 \${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}\`}>
                                           <div className="bg-gradient-custom h-2.5 rounded-full" style={{ width: ghlUser.hasTokens ? '100%' : '0%' }}></div>
                                       </div>
                                   </div>
@@ -685,13 +730,13 @@ export class CustomPageController {
                         </div>
                         {/* Right Side: Plan & Billing */}
                         <div>
-                          <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+                          <h2 className={\`text-lg font-semibold mb-4 flex items-center \${theme === 'dark' ? 'text-white' : 'text-gray-800'}\`}>
                             <i className="fas fa-credit-card text-indigo-400 mr-3"></i> Plan & Billing
                           </h2>
-                          <div className="space-y-3 text-sm bg-black/20 p-4 rounded-lg border border-white/10">
-                              <p className="flex justify-between items-center"><strong className="text-gray-400">Current Plan:</strong> <span className="font-bold text-lg text-indigo-300">Pro</span></p>
-                              <p className="flex justify-between items-center"><strong className="text-gray-400">Connected Instances:</strong> <span className="text-gray-200 font-medium">{instances.filter(i => i.state === 'authorized').length} / 5</span></p>
-                              <p className="flex justify-between items-center"><strong className="text-gray-400">Next Payment:</strong> <span className="text-gray-200 font-medium">Sep 22, 2025</span></p>
+                          <div className={\`space-y-3 text-sm p-4 rounded-lg border \${theme === 'dark' ? 'bg-black/20 border-white/10' : 'bg-gray-50 border-gray-200'}\`}>
+                              <p className="flex justify-between items-center"><strong className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Current Plan:</strong> <span className="font-bold text-lg text-indigo-300">Pro</span></p>
+                              <p className="flex justify-between items-center"><strong className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Connected Instances:</strong> <span className={\`font-medium \${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}\`}>{instances.filter(i => i.state === 'authorized').length} / 5</span></p>
+                              <p className="flex justify-between items-center"><strong className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Next Payment:</strong> <span className={\`font-medium \${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}\`}>Sep 22, 2025</span></p>
                           </div>
                           <button onClick={managePayments} className="mt-4 w-full bg-gradient-custom text-white font-bold py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">
                             Manage Payments
@@ -702,43 +747,43 @@ export class CustomPageController {
 
                     {/* Your WhatsApp Instances Card */}
                     <div className="bg-glass rounded-2xl p-6">
-                      <h2 className="text-lg font-semibold text-white mb-6 flex items-center">
+                      <h2 className={\`text-lg font-semibold mb-6 flex items-center \${theme === 'dark' ? 'text-white' : 'text-gray-800'}\`}>
                         <i className="fab fa-whatsapp text-green-400 mr-3"></i> Your WhatsApp Instances
                       </h2>
                       <div className="space-y-4">
-                        {instances.length === 0 && <p className="text-gray-400 text-center py-4">No instances added yet. Add one below!</p>}
+                        {instances.length === 0 && <p className={\`text-center py-4 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}\`}>No instances added yet. Add one below!</p>}
                         {instances.map((inst) => (
-                          <div key={inst.id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-4 rounded-xl bg-black/20 border border-white/10">
+                          <div key={inst.id} className={\`flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-4 rounded-xl border \${theme === 'dark' ? 'bg-black/20 border-white/10' : 'bg-white border-gray-200'}\`}>
                             <div className="flex-grow space-y-2 text-sm w-full md:w-auto">
                               {editingInstanceId === inst.id ? (
                                 <div className="flex items-center gap-2">
-                                  <input type="text" value={editingCustomName} onChange={(e) => setEditingCustomName(e.target.value)} className="bg-transparent border-b border-indigo-500 text-white text-lg font-semibold focus:outline-none w-full" />
+                                  <input type="text" value={editingCustomName} onChange={(e) => setEditingCustomName(e.target.value)} className={\`bg-transparent border-b text-lg font-semibold focus:outline-none w-full \${theme === 'dark' ? 'border-indigo-500 text-white' : 'border-indigo-400 text-gray-900'}\`} />
                                   <button onClick={() => saveEditedName(inst.id)} className="text-green-400 hover:text-green-300"><i className="fas fa-check"></i></button>
                                   <button onClick={cancelEditingName} className="text-red-400 hover:text-red-300"><i className="fas fa-times"></i></button>
                                 </div>
                               ) : (
-                                <p className="font-semibold text-lg text-white flex items-center">
+                                <p className={\`font-semibold text-lg flex items-center \${theme === 'dark' ? 'text-white' : 'text-gray-900'}\`}>
                                   {inst.customName || 'Unnamed Instance'}
                                   <button onClick={() => startEditingName(inst.id, inst.customName || '')} className="ml-2 text-indigo-400 hover:text-indigo-300 text-sm" title="Edit Name"><i className="fas fa-pencil-alt"></i></button>
                                 </p>
                               )}
-                              <p className="text-gray-400">Instance Email: <span className="font-mono text-gray-300 break-all">{inst.instanceName || 'N/A'}</span></p>
-                              {inst.instanceId && <p className="text-gray-400">Instance ID: <span className="font-mono text-gray-300 break-all">{inst.instanceId}</span></p>}
+                              <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Instance Email: <span className={\`font-mono break-all \${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}\`}>{inst.instanceName || 'N/A'}</span></p>
+                              {inst.instanceId && <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Instance ID: <span className={\`font-mono break-all \${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}\`}>{inst.instanceId}</span></p>}
                               <div className="flex items-center gap-2 pt-1">
                                 <span className={\`status-badge relative overflow-hidden inline-block text-xs px-3 py-1 rounded-full font-medium \${inst.state === 'authorized' ? 'bg-green-500/20 text-green-300' : inst.state === 'notAuthorized' ? 'bg-red-500/20 text-red-300' : inst.state === 'blocked' || inst.state === 'yellowCard' ? 'bg-red-600/50 text-red-200' : 'bg-yellow-500/20 text-yellow-300'}\`}>
                                   {inst.state === 'authorized' ? 'Connected' : inst.state === 'notAuthorized' ? 'Disconnected' : inst.state === 'qr_code' ? 'Awaiting Scan' : inst.state === 'starting' ? 'Connecting...' : 'Needs Action'}
                                 </span>
-                                <p className="text-gray-500 text-xs">Created: {new Date(inst.createdAt).toLocaleDateString()}</p>
+                                <p className={\`text-xs \${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}\`}>Created: {new Date(inst.createdAt).toLocaleDateString()}</p>
                               </div>
                             </div>
                             <div className="flex-shrink-0 flex flex-row md:flex-col gap-3 w-full md:w-auto">
-                              <button onClick={() => openConsole(inst.id)} className="w-full md:w-40 bg-gray-700/50 text-gray-300 font-semibold py-2 px-4 rounded-lg hover:bg-gray-600/80 transition-all duration-300 ease-in-out hover:scale-105">Open Console</button>
+                              <button onClick={() => openConsole(inst.id)} className={\`w-full md:w-40 font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out hover:scale-105 \${theme === 'dark' ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/80' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}\`}>Open Console</button>
                               {inst.state === 'authorized' ? (
-                                <button onClick={() => logoutInstance(inst.id)} className="w-full md:w-40 bg-yellow-500/20 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-500/40 transition-all duration-300 ease-in-out hover:scale-105">Logout</button>
+                                <button onClick={() => logoutInstance(inst.id)} className={\`w-full md:w-40 font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out hover:scale-105 \${theme === 'dark' ? 'bg-yellow-500/20 text-white hover:bg-yellow-500/40' : 'bg-yellow-500 text-white hover:bg-yellow-600'}\`}>Logout</button>
                               ) : (
                                 <button onClick={() => connectInstance(inst.id)} className="w-full md:w-40 bg-gradient-custom text-white font-bold py-2 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">Connect</button>
                               )}
-                              <button onClick={() => deleteInstance(inst.id)} className="w-full md:w-40 bg-red-500/20 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-500/40 transition-all duration-300 ease-in-out hover:scale-105">Delete</button>
+                              <button onClick={() => deleteInstance(inst.id)} className={\`w-full md:w-40 font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out hover:scale-105 \${theme === 'dark' ? 'bg-red-500/20 text-white hover:bg-red-500/40' : 'bg-red-600 text-white hover:bg-red-700'}\`}>Delete</button>
                             </div>
                           </div>
                         ))}
@@ -747,27 +792,27 @@ export class CustomPageController {
                     
                     {/* Add New Instance Card */}
                     <div className="bg-glass rounded-2xl p-6">
-                      <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+                      <h2 className={\`text-lg font-semibold mb-4 flex items-center \${theme === 'dark' ? 'text-white' : 'text-gray-800'}\`}>
                         <i className="fas fa-plus-circle text-green-400 mr-3"></i> Add New Instance
                       </h2>
                       <form onSubmit={createInstance} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID</label>
-                            <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., a1b2c3d3-e5f6h7-etc" required />
+                            <label htmlFor="instanceGuid" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance ID</label>
+                            <input type="text" id="instanceGuid" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., a1b2c3d3-e5f6h7-etc" required />
                           </div>
                           <div>
-                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Email</label>
-                            <input type="text" id="instanceName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., example@gmail.com" required />
+                            <label htmlFor="instanceName" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance Email</label>
+                            <input type="text" id="instanceName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., example@gmail.com" required />
                           </div>
                         </div>
                         <div>
-                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">Token</label>
-                          <input type="text" id="token" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="A1B2-C3D4-F5G6H7-ETC" required />
+                          <label htmlFor="token" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Token</label>
+                          <input type="text" id="token" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="A1B2-C3D4-F5G6H7-ETC" required />
                         </div>
                         <div>
-                          <label htmlFor="customName" className="block text-sm font-medium text-gray-400 mb-1">Instance Custom Name (Optional)</label>
-                          <input type="text" id="customName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.customName} onChange={(e) => setForm({ ...form, customName: e.target.value })} placeholder="e.g., Sales Team WhatsApp" />
+                          <label htmlFor="customName" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance Custom Name (Optional)</label>
+                          <input type="text" id="customName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.customName} onChange={(e) => setForm({ ...form, customName: e.target.value })} placeholder="e.g., Sales Team WhatsApp" />
                         </div>
                         <button type="submit" className="w-full bg-gradient-custom text-white font-bold py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">Add Instance</button>
                       </form>
@@ -778,7 +823,7 @@ export class CustomPageController {
                   {showQr && (
                     <div className="modal-overlay" onClick={() => setShowQr(false)}>
                       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h2 className="text-2xl font-bold text-white mb-4">Scan QR Code</h2>
+                        <h2 className={\`text-2xl font-bold mb-4 \${theme === 'dark' ? 'text-white' : 'text-gray-800'}\`}>Scan QR Code</h2>
                         {qrLoading ? (
                           <div className="flex flex-col items-center justify-center h-64"><div className="spinner"></div><p className="mt-4 text-gray-400">Loading QR...</p></div>
                         ) : qr ? (
@@ -786,7 +831,7 @@ export class CustomPageController {
                         ) : (
                           <p className="text-red-400">Could not load QR code. Please try again.</p>
                         )}
-                        <button onClick={() => setShowQr(false)} className="mt-6 px-6 py-2 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition">Close</button>
+                        <button onClick={() => setShowQr(false)} className={\`mt-6 px-6 py-2 rounded-lg font-semibold transition \${theme === 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}\`}>Close</button>
                       </div>
                     </div>
                   )}
@@ -795,10 +840,10 @@ export class CustomPageController {
                   {modal.show && (
                     <div className="modal-overlay">
                       <div className="modal-content">
-                        <p className="text-lg font-medium mb-6 text-gray-300">{modal.message}</p>
+                        <p className={\`text-lg font-medium mb-6 \${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}\`}>{modal.message}</p>
                         <div className="flex justify-center gap-4">
                           {modal.type === 'confirm' && (
-                            <button onClick={modal.onCancel} className="px-6 py-2 rounded-lg bg-gray-600 text-gray-200 font-semibold hover:bg-gray-500 transition">Cancel</button>
+                            <button onClick={modal.onCancel} className={\`px-6 py-2 rounded-lg font-semibold transition \${theme === 'dark' ? 'bg-gray-600 text-gray-200 hover:bg-gray-500' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'}\`}>Cancel</button>
                           )}
                           <button onClick={modal.onConfirm || closeModal} className={\`px-6 py-2 rounded-lg text-white font-semibold shadow-md transition \${modal.type === 'error' ? 'bg-red-600 hover:bg-red-700' : 'bg-indigo-600 hover:bg-indigo-700'}\`}>
                             {modal.type === 'confirm' ? 'Confirm' : 'OK'}
