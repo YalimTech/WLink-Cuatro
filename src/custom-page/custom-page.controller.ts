@@ -117,7 +117,6 @@ export class CustomPageController {
   /**
    * Genera el HTML completo para la página de gestión de instancias de WhatsApp.
    * Incluye la aplicación React con toda la lógica de UI y llamadas a la API.
-   *
    */
   private generateCustomPageHTML(): string {
     return `
@@ -229,7 +228,8 @@ export class CustomPageController {
               const [modal, setModal] = useState({ show: false, message: '', type: '', onConfirm: null, onCancel: null }); 
               const [ghlUser, setGhlUser] = useState({ name: 'Loading...', email: 'Loading...', hasTokens: false }); 
               const [editingInstanceId, setEditingInstanceId] = useState(null); 
-              const [editingCustomName, setEditingCustomName] = useState(''); 
+              const [editingCustomName, setEditingCustomName] = useState('');
+              const [appLogo, setAppLogo] = useState('https://storage.googleapis.com/highlevel-apps-marketplace-storage-v2/685063e4a00e933bbc8184a5/profile/basicInfo/appLogo-1724341588220-WLink%20(1).png');
 
               // Función para mostrar el modal personalizado
               const showModal = (message, type = 'info', onConfirm = null, onCancel = null) => {
@@ -341,6 +341,10 @@ export class CustomPageController {
                     email: res.userData.email || 'N/A',
                     hasTokens: res.user ? res.user.hasTokens : false 
                   });
+                  // Actualizar el logo de la app
+                  if(res.userData && res.userData.app && res.userData.app.logoUrl) {
+                    setAppLogo(res.userData.app.logoUrl);
+                  }
                   console.log('User data decrypted and locationId set:', res.locationId);
                 } catch (err) {
                   console.error('Error processing user data:', err);
@@ -628,13 +632,11 @@ export class CustomPageController {
                 <div className="space-y-8 w-full">
                   {/* Header */}
                   <header className="flex items-center space-x-4">
-                      <div className="bg-green-500 p-3 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)]">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.267.655 4.398 1.908 6.161l.216.324-1.256 4.587 4.71-1.241.33.208z"/>
-                          </svg>
+                      <div className="bg-gray-800 p-2 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)]">
+                          <img src={appLogo} alt="App Logo" className="h-10 w-10 rounded-full" />
                       </div>
                       <div>
-                          <h1 className="text-3xl font-bold text-white">WhatsApp Integration</h1>
+                          <h1 className="text-3xl font-bold text-white">WLink</h1>
                           <p className="text-gray-400">Manage your instances with ease</p>
                       </div>
                   </header>
