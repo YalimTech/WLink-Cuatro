@@ -260,7 +260,7 @@ export class CustomPageController {
               const [ghlUser, setGhlUser] = useState({ name: 'Loading...', email: 'Loading...', hasTokens: false }); 
               const [editingInstanceId, setEditingInstanceId] = useState(null); 
               const [editingCustomName, setEditingCustomName] = useState('');
-              const [appLogo, setAppLogo] = useState('/public/LogoIcon.jpg');
+              const [appLogo, setAppLogo] = useState('/LogoIcon.jpg');
               const [appName, setAppName] = useState('WLink');
               const [theme, setTheme] = useState('dark');
 
@@ -692,7 +692,7 @@ export class CustomPageController {
                               src={appLogo} 
                               alt="App Logo" 
                               className="h-10 w-10 rounded-full"
-                              onError={(e) => { e.currentTarget.src = '/public/LogoIcon.jpg'; }}
+                              onError={(e) => { e.currentTarget.src = '/LogoIcon.jpg'; }}
                             />
                         </div>
                         <div>
