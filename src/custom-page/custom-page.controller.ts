@@ -342,11 +342,23 @@ export class CustomPageController {
                     email: res.userData.email || 'N/A',
                     hasTokens: res.user ? res.user.hasTokens : false 
                   });
-                  // Actualizar el logo y nombre de la app
-                  if(res.userData && res.userData.app) {
-                    if(res.userData.app.logoUrl) setAppLogo(res.userData.app.logoUrl);
-                    if(res.userData.app.name) setAppName(res.userData.app.name);
+                  
+                  // CORRECCIÓN: Lógica mejorada para encontrar y establecer el logo y nombre de la app
+                  console.log("Full GHL userData received:", res.userData);
+                  const appData = res.userData.app || res.userData.company?.app;
+                  if (appData) {
+                    if (appData.logoUrl) {
+                      setAppLogo(appData.logoUrl);
+                      console.log("App Logo URL found and set:", appData.logoUrl);
+                    }
+                    if (appData.name) {
+                      setAppName(appData.name);
+                      console.log("App Name found and set:", appData.name);
+                    }
+                  } else {
+                    console.warn("App data (logo, name) not found in the expected location within userData.");
                   }
+
                   console.log('User data decrypted and locationId set:', res.locationId);
                 } catch (err) {
                   console.error('Error processing user data:', err);
