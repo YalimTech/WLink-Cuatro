@@ -687,11 +687,11 @@ export class CustomPageController {
                   {/* Header */}
                   <header className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                        <div className="p-2 shadow-[0_0_15px_rgba(52,211,153,0.5)] h-14 w-14 flex items-center justify-center">
+                        <div className="flex items-center justify-center">
                             <img
                               src={appLogo}
                               alt="App Logo"
-                              className="h-10 w-10"
+                              className="h-16 w-16 rounded-md"
                               onError={(e) => { e.currentTarget.src = '/LOGO_ICON.png'; }}
                             />
                         </div>
