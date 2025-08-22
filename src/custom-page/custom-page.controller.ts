@@ -706,7 +706,7 @@ export class CustomPageController {
                                   <button onClick={() => startEditingName(inst.id, inst.customName || '')} className="ml-2 text-indigo-400 hover:text-indigo-300 text-sm" title="Edit Name"><i className="fas fa-pencil-alt"></i></button>
                                 </p>
                               )}
-                              <p className="text-gray-400">Instance Name: <span className="font-mono text-gray-300 break-all">{inst.instanceName || 'N/A'}</span></p>
+                              <p className="text-gray-400">Instance Email: <span className="font-mono text-gray-300 break-all">{inst.instanceName || 'N/A'}</span></p>
                               {inst.instanceId && <p className="text-gray-400">Instance ID: <span className="font-mono text-gray-300 break-all">{inst.instanceId}</span></p>}
                               <div className="flex items-center gap-2 pt-1">
                                 <span className={\`status-badge relative overflow-hidden inline-block text-xs px-3 py-1 rounded-full font-medium \${inst.state === 'authorized' ? 'bg-green-500/20 text-green-300' : inst.state === 'notAuthorized' ? 'bg-red-500/20 text-red-300' : inst.state === 'blocked' || inst.state === 'yellowCard' ? 'bg-red-600/50 text-red-200' : 'bg-yellow-500/20 text-yellow-300'}\`}>
@@ -741,12 +741,12 @@ export class CustomPageController {
                             <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., abcd-1234-guid" required />
                           </div>
                           <div>
-                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Name</label>
-                            <input type="text" id="instanceName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., 1234567890" required />
+                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Email</label>
+                            <input type="text" id="instanceName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., example@gmail.com" required />
                           </div>
                         </div>
                         <div>
-                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">API Token</label>
+                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">Token</label>
                           <input type="text" id="token" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="Your Evolution API token" required />
                         </div>
                         <div>
