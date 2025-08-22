@@ -3,33 +3,30 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { json, urlencoded } from 'express';
-// --- INICIO DE CAMBIOS ---
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-// --- FIN DE CAMBIOS ---
 
-// Soluciona el error de serialización de BigInt en las respuestas JSON.
+// Serialización de BigInt en JSON
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
 
 async function bootstrap() {
-  // --- INICIO DE CAMBIOS ---
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {});
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Configuración para servir archivos estáticos desde la carpeta 'public'
-  app.useStaticAssets(join(__dirname, '..', 'public'), {
-    prefix: '/public/',
-  });
-  // --- FIN DE CAMBIOS ---
+  // === Servir archivos estáticos ===
+  // Sirve {projectRoot}/public en la RAÍZ del dominio.
+  // Ej.: public/LogoIcon.png -> https://tu-dominio/LogoIcon.png
+  app.useStaticAssets(join(__dirname, '..', 'public'));
 
-  // --- Tu configuración existente ---
+  // === Configuración existente ===
   app.use(json({ limit: '1mb' }));
   app.use(urlencoded({ extended: true, limit: '1mb' }));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
+
   app.use(
     helmet({
-      frameguard: false, // No forzar SAMEORIGIN
+      frameguard: false,
       crossOriginOpenerPolicy: false,
       crossOriginEmbedderPolicy: false,
       crossOriginResourcePolicy: { policy: 'cross-origin' },
@@ -39,7 +36,8 @@ async function bootstrap() {
           defaultSrc: ["'self'", 'https:', 'data:'],
           scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https:'],
           styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
-          imgSrc: ["'self'", 'data:', 'https:', 'http:', '/public/'],
+          // Importante: no uses rutas como '/public/' en CSP. Con 'self' basta.
+          imgSrc: ["'self'", 'data:', 'https:', 'http:', 'blob:'],
           connectSrc: ["'self'", 'https:', 'http:', 'data:'],
           frameAncestors: ['*'],
           frameSrc: ['*'],
@@ -48,10 +46,8 @@ async function bootstrap() {
       },
     }),
   );
-  app.enableShutdownHooks();
-  // --- Fin de tu configuración ---
 
-  // Habilitar CORS para permitir peticiones desde el frontend.
+  app.enableShutdownHooks();
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
