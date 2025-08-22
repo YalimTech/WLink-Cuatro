@@ -16,7 +16,7 @@ async function bootstrap() {
 
   // === Servir archivos estáticos ===
   // Sirve {projectRoot}/public en la RAÍZ del dominio.
-  // Ej.: public/LogoIcon.png -> https://tu-dominio/LogoIcon.png
+  // Ej.: public/LogoIcon.svg -> https://tu-dominio/LogoIcon.svg
   app.useStaticAssets(join(process.cwd(), 'public'));
 
   // === Configuración existente ===
