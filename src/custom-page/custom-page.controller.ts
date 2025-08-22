@@ -688,7 +688,12 @@ export class CustomPageController {
                   <header className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                         <div className="bg-gray-800 p-2 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.5)] h-14 w-14 flex items-center justify-center">
-                            {appLogo ? <img src={appLogo} alt="App Logo" className="h-10 w-10 rounded-full" /> : <div className="h-10 w-10 rounded-full bg-gray-700 animate-pulse"></div>}
+                            <img 
+                              src={appLogo} 
+                              alt="App Logo" 
+                              className="h-10 w-10 rounded-full"
+                              onError={(e) => { e.currentTarget.src = '/public/LogoIcon.jpg'; }}
+                            />
                         </div>
                         <div>
                             <h1 className={\`text-3xl font-bold \${theme === 'dark' ? 'text-white' : 'text-gray-900'}\`}>{appName}</h1>
