@@ -94,16 +94,15 @@ export class CustomPageController {
         throw new UnauthorizedException('No active location ID in user context');
       }
 
-      // CAMBIO: findUser ahora espera locationId y el User model ahora tiene locationId
       const user = await this.prisma.findUser(locationId);
-      console.log('User found in DB:', user ? user.locationId : 'None'); // CAMBIO: user.id a user.locationId
+      console.log('User found in DB:', user ? user.locationId : 'None');
 
       return res.json({
         success: true,
         locationId,
         userData, // Pass the full userData object
         user: user
-          ? { locationId: user.locationId, hasTokens: !!(user.accessToken && user.refreshToken) } // CAMBIO: id a locationId
+          ? { locationId: user.locationId, hasTokens: !!(user.accessToken && user.refreshToken) }
           : null,
       });
     } catch (error) {
@@ -618,6 +617,11 @@ export class CustomPageController {
               const openConsole = (instanceId) => {
                 showModal('Abriendo consola para la instancia: ' + instanceId, 'info');
               };
+              
+              const managePayments = () => {
+                showModal('Redirecting to payment management...', 'info');
+                // Aquí iría la lógica para redirigir a la página de pagos
+              }
 
 
               return (
@@ -630,37 +634,52 @@ export class CustomPageController {
                           </svg>
                       </div>
                       <div>
-                          <h1 className="text-3xl font-bold text-white">WLink</h1>
+                          <h1 className="text-3xl font-bold text-white">WhatsApp Integration</h1>
                           <p className="text-gray-400">Manage your instances with ease</p>
                       </div>
                   </header>
 
                   <main className="space-y-6">
-                    {/* Connection Status Card */}
+                    {/* Connection Status & Plan Details Card */}
                     <div className="bg-glass rounded-2xl p-6">
-                      <h2 className="text-lg font-semibold text-white mb-6 flex items-center">
-                        <i className="fas fa-signal text-indigo-400 mr-3"></i> Connection Status
-                      </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
-                        <div className="space-y-3">
-                            <p className="flex items-center"><i className="fas fa-user text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">User:</strong> <span className="text-gray-200">{ghlUser.name}</span></p>
-                            <p className="flex items-center"><i className="fas fa-envelope text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Email:</strong> <span className="text-gray-200">{ghlUser.email}</span></p>
-                            <p className="flex items-center"><i className="fas fa-map-marker-alt text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Location ID:</strong> <span className="text-gray-200 break-all">{locationId || 'Loading...'}</span></p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        {/* Left Side: Connection Status */}
+                        <div>
+                          <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+                            <i className="fas fa-signal text-indigo-400 mr-3"></i> Connection Status
+                          </h2>
+                          <div className="space-y-3 text-sm">
+                              <p className="flex items-center"><i className="fas fa-user text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">User:</strong> <span className="text-gray-200">{ghlUser.name}</span></p>
+                              <p className="flex items-center"><i className="fas fa-envelope text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Email:</strong> <span className="text-gray-200">{ghlUser.email}</span></p>
+                              <p className="flex items-center"><i className="fas fa-map-marker-alt text-gray-400 mr-3 w-4 text-center"></i> <strong className="text-gray-400 mr-2">Location ID:</strong> <span className="text-gray-200 break-all">{locationId || 'Loading...'}</span></p>
+                              <div className="pt-2">
+                                  <h3 className="font-semibold text-white mb-2 flex items-center text-sm">
+                                      <i className="fas fa-shield-alt text-indigo-400 mr-2"></i> OAuth Status
+                                  </h3>
+                                  <div className="flex items-center space-x-3">
+                                      <div className="w-full bg-gray-700 rounded-full h-2.5">
+                                          <div className="bg-gradient-custom h-2.5 rounded-full" style={{ width: ghlUser.hasTokens ? '100%' : '0%' }}></div>
+                                      </div>
+                                  </div>
+                                  <span className={\`font-medium whitespace-nowrap mt-2 block \${ghlUser.hasTokens ? 'text-green-400' : 'text-yellow-400'}\`}>
+                                    {ghlUser.hasTokens ? 'Authenticated & Ready' : 'Not Authenticated'}
+                                  </span>
+                              </div>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                            <div className="w-full">
-                                <h3 className="font-semibold text-white mb-3 flex items-center text-sm">
-                                    <i className="fas fa-shield-alt text-indigo-400 mr-2"></i> OAuth Status
-                                </h3>
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-full bg-gray-700 rounded-full h-2.5">
-                                        <div className="bg-gradient-custom h-2.5 rounded-full" style={{ width: ghlUser.hasTokens ? '100%' : '0%' }}></div>
-                                    </div>
-                                </div>
-                                <span className={\`font-medium whitespace-nowrap mt-2 block \${ghlUser.hasTokens ? 'text-green-400' : 'text-yellow-400'}\`}>
-                                  {ghlUser.hasTokens ? 'Authenticated & Ready' : 'Not Authenticated'}
-                                </span>
-                            </div>
+                        {/* Right Side: Plan & Billing */}
+                        <div>
+                          <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+                            <i className="fas fa-credit-card text-indigo-400 mr-3"></i> Plan & Billing
+                          </h2>
+                          <div className="space-y-3 text-sm bg-black/20 p-4 rounded-lg border border-white/10">
+                              <p className="flex justify-between items-center"><strong className="text-gray-400">Current Plan:</strong> <span className="font-bold text-lg text-indigo-300">Pro</span></p>
+                              <p className="flex justify-between items-center"><strong className="text-gray-400">Connected Instances:</strong> <span className="text-gray-200 font-medium">{instances.filter(i => i.state === 'authorized').length} / 5</span></p>
+                              <p className="flex justify-between items-center"><strong className="text-gray-400">Next Payment:</strong> <span className="text-gray-200 font-medium">Sep 22, 2025</span></p>
+                          </div>
+                          <button onClick={managePayments} className="mt-4 w-full bg-gradient-custom text-white font-bold py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">
+                            Manage Payments
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -697,13 +716,13 @@ export class CustomPageController {
                               </div>
                             </div>
                             <div className="flex-shrink-0 flex flex-row md:flex-col gap-3 w-full md:w-auto">
-                              <button onClick={() => openConsole(inst.id)} className="w-full md:w-40 bg-gray-700/50 text-gray-300 font-semibold py-2 px-4 rounded-lg hover:bg-gray-600/80 transition-all duration-300 ease-in-out hover:scale-105">Payments</button>
+                              <button onClick={() => openConsole(inst.id)} className="w-full md:w-40 bg-gray-700/50 text-gray-300 font-semibold py-2 px-4 rounded-lg hover:bg-gray-600/80 transition-all duration-300 ease-in-out hover:scale-105">Open Console</button>
                               {inst.state === 'authorized' ? (
-                                <button onClick={() => logoutInstance(inst.id)} className="w-full md:w-40 bg-yellow-500/20 text-yellow-400 font-semibold py-2 px-4 rounded-lg hover:bg-yellow-500/40 transition-all duration-300 ease-in-out hover:scale-105">Logout</button>
+                                <button onClick={() => logoutInstance(inst.id)} className="w-full md:w-40 bg-yellow-500/20 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-500/40 transition-all duration-300 ease-in-out hover:scale-105">Logout</button>
                               ) : (
                                 <button onClick={() => connectInstance(inst.id)} className="w-full md:w-40 bg-gradient-custom text-white font-bold py-2 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">Connect</button>
                               )}
-                              <button onClick={() => deleteInstance(inst.id)} className="w-full md:w-40 bg-red-500/20 text-red-400 font-semibold py-2 px-4 rounded-lg hover:bg-red-500/40 transition-all duration-300 ease-in-out hover:scale-105">Delete</button>
+                              <button onClick={() => deleteInstance(inst.id)} className="w-full md:w-40 bg-red-500/20 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-500/40 transition-all duration-300 ease-in-out hover:scale-105">Delete</button>
                             </div>
                           </div>
                         ))}
@@ -718,16 +737,16 @@ export class CustomPageController {
                       <form onSubmit={createInstance} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID</label>
+                            <label htmlFor="instanceGuid" className="block text-sm font-medium text-gray-400 mb-1">Instance ID (GUID)</label>
                             <input type="text" id="instanceGuid" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., abcd-1234-guid" required />
                           </div>
                           <div>
-                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Email</label>
+                            <label htmlFor="instanceName" className="block text-sm font-medium text-gray-400 mb-1">Instance Name</label>
                             <input type="text" id="instanceName" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., 1234567890" required />
                           </div>
                         </div>
                         <div>
-                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">Token</label>
+                          <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-1">API Token</label>
                           <input type="text" id="token" className="bg-gray-900/50 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="Your Evolution API token" required />
                         </div>
                         <div>
@@ -782,4 +801,3 @@ export class CustomPageController {
     `;
   }
 }
-
