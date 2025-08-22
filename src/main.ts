@@ -29,7 +29,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
   app.use(
     helmet({
-      frameguard: false,
+      frameguard: false, // No forzar SAMEORIGIN
       crossOriginOpenerPolicy: false,
       crossOriginEmbedderPolicy: false,
       crossOriginResourcePolicy: { policy: 'cross-origin' },
@@ -51,6 +51,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
   // --- Fin de tu configuración ---
 
+  // Habilitar CORS para permitir peticiones desde el frontend.
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -63,4 +64,3 @@ async function bootstrap() {
   console.log(`Application is running on: http://${host === '::' ? '[::]' : host}:${port}`);
 }
 void bootstrap();
-
