@@ -810,20 +810,20 @@ export class CustomPageController {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label htmlFor="instanceGuid" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance ID</label>
-                            <input type="text" id="instanceGuid" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., a1b2c3d3-e5f6h7-etc" required />
+                            <input type="text" id="instanceGuid" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., a1b2c3d3-e5f6h7-etc" required />
                           </div>
                           <div>
                             <label htmlFor="instanceName" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance Email</label>
-                            <input type="text" id="instanceName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., example@gmail.com" required />
+                            <input type="text" id="instanceName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., example@gmail.com" required />
                           </div>
                         </div>
                         <div>
                           <label htmlFor="token" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Token</label>
-                          <input type="text" id="token" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="A1B2-C3D4-F5G6H7-ETC" required />
+                          <input type="text" id="token" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="A1B2-C3D4-F5G6H7-ETC" required />
                         </div>
                         <div>
                           <label htmlFor="customName" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance Custom Name (Optional)</label>
-                          <input type="text" id="customName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-gray-900/50 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.customName} onChange={(e) => setForm({ ...form, customName: e.target.value })} placeholder="e.g., Sales Team WhatsApp" />
+                          <input type="text" id="customName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.customName} onChange={(e) => setForm({ ...form, customName: e.target.value })} placeholder="e.g., Sales Team WhatsApp" />
                         </div>
                         <button type="submit" className="w-full bg-gradient-custom text-white font-bold py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">Add Instance</button>
                       </form>
