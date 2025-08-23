@@ -679,8 +679,22 @@ export class CustomPageController {
               const managePayments = () => {
                 showModal('Redirecting to payment management...', 'info');
                 // Aquí iría la lógica para redirigir a la página de pagos
-              }
+              };
 
+              const getStatusBadgeClasses = (state) => {
+                const isDark = theme === 'dark';
+                switch (state) {
+                  case 'authorized':
+                    return isDark ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-800';
+                  case 'notAuthorized':
+                    return isDark ? 'bg-red-500/20 text-red-300' : 'bg-red-100 text-red-800';
+                  case 'blocked':
+                  case 'yellowCard':
+                     return isDark ? 'bg-red-600/50 text-red-200' : 'bg-red-200 text-red-900';
+                  default: // starting, qr_code, etc.
+                    return isDark ? 'bg-yellow-500/20 text-yellow-300' : 'bg-yellow-100 text-yellow-800';
+                }
+              };
 
               return (
                 <div className="space-y-8 w-full">
@@ -781,7 +795,7 @@ export class CustomPageController {
                               <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Instance Email: <span className={\`font-mono break-all \${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}\`}>{inst.instanceName || 'N/A'}</span></p>
                               {inst.instanceId && <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Instance ID: <span className={\`font-mono break-all \${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}\`}>{inst.instanceId}</span></p>}
                               <div className="flex items-center gap-2 pt-1">
-                                <span className={\`status-badge relative overflow-hidden inline-block text-xs px-3 py-1 rounded-full font-medium \${inst.state === 'authorized' ? 'bg-green-500/20 text-green-300' : inst.state === 'notAuthorized' ? 'bg-red-500/20 text-red-300' : inst.state === 'blocked' || inst.state === 'yellowCard' ? 'bg-red-600/50 text-red-200' : 'bg-yellow-500/20 text-yellow-300'}\`}>
+                                <span className={\`status-badge relative overflow-hidden inline-block text-xs px-3 py-1 rounded-full font-medium \${getStatusBadgeClasses(inst.state)}\`}>
                                   {inst.state === 'authorized' ? 'Connected' : inst.state === 'notAuthorized' ? 'Disconnected' : inst.state === 'qr_code' ? 'Awaiting Scan' : inst.state === 'starting' ? 'Connecting...' : 'Needs Action'}
                                 </span>
                                 <p className={\`text-xs \${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}\`}>Created: {new Date(inst.createdAt).toLocaleDateString()}</p>
@@ -810,20 +824,20 @@ export class CustomPageController {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label htmlFor="instanceGuid" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance ID</label>
-                            <input type="text" id="instanceGuid" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., a1b2c3d3-e5f6h7-etc" required />
+                            <input type="text" id="instanceGuid" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-gray-400 text-gray-900'}\`} value={form.instanceId || ''} onChange={(e) => setForm({ ...form, instanceId: e.target.value })} placeholder="e.g., a1b2c3d3-e5f6h7-etc" required />
                           </div>
                           <div>
                             <label htmlFor="instanceName" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance Email</label>
-                            <input type="text" id="instanceName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., example@gmail.com" required />
+                            <input type="text" id="instanceName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-gray-400 text-gray-900'}\`} value={form.instanceName} onChange={(e) => setForm({ ...form, instanceName: e.target.value })} placeholder="e.g., example@gmail.com" required />
                           </div>
                         </div>
                         <div>
                           <label htmlFor="token" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Token</label>
-                          <input type="text" id="token" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="A1B2-C3D4-F5G6H7-ETC" required />
+                          <input type="text" id="token" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-gray-400 text-gray-900'}\`} value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} placeholder="A1B2-C3D4-F5G6H7-ETC" required />
                         </div>
                         <div>
                           <label htmlFor="customName" className={\`block text-sm font-medium mb-1 \${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}\`}>Instance Custom Name (Optional)</label>
-                          <input type="text" id="customName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}\`} value={form.customName} onChange={(e) => setForm({ ...form, customName: e.target.value })} placeholder="e.g., Sales Team WhatsApp" />
+                          <input type="text" id="customName" className={\`sm:text-sm rounded-lg block w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500 \${theme === 'dark' ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-gray-400 text-gray-900'}\`} value={form.customName} onChange={(e) => setForm({ ...form, customName: e.target.value })} placeholder="e.g., Sales Team WhatsApp" />
                         </div>
                         <button type="submit" className="w-full bg-gradient-custom text-white font-bold py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all duration-300 ease-in-out hover:shadow-[0_0_25px_rgba(79,70,229,0.8)] hover:scale-105">Add Instance</button>
                       </form>
